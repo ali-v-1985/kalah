@@ -1,0 +1,24 @@
+kalah:
+  players: 2
+  pits: 6
+  stones: 6
+
+server:
+  port: 8086
+
+spring:
+  main:
+    banner-mode: "off"
+#  jpa:
+#    database: h2
+#    hibernate:
+#      dialect: org.hibernate.dialect.H2Dialect
+#      ddl-auto: create-drop
+#  freemarker:
+#    template-loader-path: classpath:/templates
+#    suffix: .ftl
+
+logging:
+  level:
+    org:
+      springframework: ERROR
