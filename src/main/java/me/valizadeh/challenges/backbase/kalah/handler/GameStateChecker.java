@@ -1,4 +1,4 @@
-package me.valizadeh.challenges.backbase.kalah.service;
+package me.valizadeh.challenges.backbase.kalah.handler;
 
 import me.valizadeh.challenges.backbase.kalah.model.GameState;
 import me.valizadeh.challenges.backbase.kalah.model.Pit;
@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Check the state of the game and see if it is finished. If so then do the necessary moves and defines the winner.
+ *
+ * @author Ali
+ */
 @Component
 public class GameStateChecker {
 
@@ -21,6 +26,13 @@ public class GameStateChecker {
         this.players = players;
     }
 
+    /**
+     * For each player check if they have possible moves.
+     * If one of the players has no moves then the game is finished and the end game moves should be executed.
+     *
+     * @param gameState The game state should be checked.
+     * @return The game state after checking and possible necessary moves are applied on.
+     */
     public GameState checkIfFinished(GameState gameState) {
         List<Pit> gameStatePits = gameState.getPits();
         boolean finished = false;

@@ -1,4 +1,4 @@
-package me.valizadeh.challenges.backbase.kalah.service;
+package me.valizadeh.challenges.backbase.kalah.handler;
 
 import me.valizadeh.challenges.backbase.kalah.model.GameState;
 import me.valizadeh.challenges.backbase.kalah.model.Pit;
@@ -13,8 +13,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
+/**
+ * The handler which is responsible for applying the moves on the game.
+ *
+ * @author Ali
+ */
 @Component
-public class MoveExecutor {
+public class MoveHandler {
 
     private final PlayGameValidator validator;
 
@@ -26,9 +31,9 @@ public class MoveExecutor {
 
     private final Integer players;
 
-    public MoveExecutor(PlayGameValidator validator,
-                        @Value("${kalah.pits}") Integer pits,
-                        @Value("${kalah.players}") Integer players) {
+    public MoveHandler(PlayGameValidator validator,
+                       @Value("${kalah.pits}") Integer pits,
+                       @Value("${kalah.players}") Integer players) {
         this.validator = validator;
         this.pits = pits;
         this.players = players;
@@ -37,6 +42,14 @@ public class MoveExecutor {
         this.isPlayerRegularPitPredicate = new IsPlayerRegularPitPredicate(pits);
     }
 
+    /**
+     * Validate the move and the player which is making the move
+     * and if it is valid then empty the stones in the given pit and play with them.
+     *
+     * @param gameState The game state which move should be applied on.
+     * @param pitId The pit which should be played.
+     * @return The game state after moved being applied on.
+     */
     public GameState play(GameState gameState,
                           int pitId) {
         validator.validatePitId(pitId);
@@ -48,27 +61,39 @@ public class MoveExecutor {
 
         emptyPlayedPitAndPlay(gameState,
                 playedPit,
-                pitId,
                 playerId);
 
         return gameState;
     }
 
+    /**
+     * Get the playerId based on the pit which has been chosen.
+     *
+     * @param pitId The pit which has been chosen.
+     * @return The player id.
+     */
+    private int getPlayerId(int pitId) {
+        return ((pitId - 1) / (pits + 1)) + 1;
+    }
+
+    /**
+     * Empty the chosen pit and go through the pits
+     * which the stones should be put into them and do the necessary steps.
+     *
+     *  @param gameState The game state which move should be applied on.
+     * @param playedPit The {@link Pit} which has been chosen to be played.
+     * @param playerId The player which is making the move based on the selected pit.
+     */
     private void emptyPlayedPitAndPlay(GameState gameState,
                                        Pit playedPit,
-                                       int pitId,
                                        int playerId) {
         int playedPitStones = playedPit.empty();
         AtomicInteger stonesToPlayed = new AtomicInteger(playedPitStones);
         List<Pit> pitsBeforePlay = gameState.getPits();
-        getGoThroughPits(pitsBeforePlay, pitId, playedPitStones, playedPitStones)
+        getGoThroughPits(pitsBeforePlay, playedPit.getId(), playedPitStones, playedPitStones)
                 .filter(p -> opponentKalahPredicate.negate().test(p, playerId))
                 .forEach(p -> putStoneInPit(gameState, stonesToPlayed, playerId,
                         p));
-    }
-
-    private int getPlayerId(int pitId) {
-        return ((pitId - 1) / (pits + 1)) + 1;
     }
 
     private IntStream getGoThroughPits(List<Pit> pits,
@@ -79,6 +104,14 @@ public class MoveExecutor {
 
         boolean jumpOpponentKalah = needJumpOpponentKalah(pits, stones, pitRelativeId);
         return getShouldBePlayedPitsStream(pits, pitId, stones, playedPitStones, jumpOpponentKalah);
+    }
+
+    private int getPitRelativeToPlayerId(int pitId) {
+        int pitRelativeId = pitId;
+        if (pitId > pits) {
+            pitRelativeId = pitId - (pits + 1);
+        }
+        return pitRelativeId;
     }
 
     private boolean needJumpOpponentKalah(List<Pit> pits,
@@ -102,16 +135,6 @@ public class MoveExecutor {
         return goThroughPits;
     }
 
-    private IntStream playAcrossBoard(int pitId,
-                                      boolean jumpOpponentKalah,
-                                      int lastPit) {
-        IntStream goThroughPits;
-        if (jumpOpponentKalah)
-            lastPit += 1;
-        goThroughPits = IntStream.rangeClosed(pitId + 1, lastPit);
-        return goThroughPits;
-    }
-
     private IntStream goAroundBoard(List<Pit> pits,
                                     int pitId,
                                     int stones,
@@ -126,12 +149,14 @@ public class MoveExecutor {
         return goThroughPits;
     }
 
-    private int getPitRelativeToPlayerId(int pitId) {
-        int pitRelativeId = pitId;
-        if (pitId > pits) {
-            pitRelativeId = pitId - (pits + 1);
-        }
-        return pitRelativeId;
+    private IntStream playAcrossBoard(int pitId,
+                                      boolean jumpOpponentKalah,
+                                      int lastPit) {
+        IntStream goThroughPits;
+        if (jumpOpponentKalah)
+            lastPit += 1;
+        goThroughPits = IntStream.rangeClosed(pitId + 1, lastPit);
+        return goThroughPits;
     }
 
     private void putStoneInPit(GameState gameState,

@@ -9,8 +9,10 @@ public class Game {
 
     private static final String FORMAT_URI = "http://{0}:{1}/games/{2}";
 
+    /**
+     * Should be replaced with a better mechanism.
+     */
     private static Integer idGenerator = 0;
-
 
     private Integer id;
 

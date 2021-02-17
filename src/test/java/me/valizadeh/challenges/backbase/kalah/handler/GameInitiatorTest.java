@@ -1,4 +1,4 @@
-package me.valizadeh.challenges.backbase.kalah.service;
+package me.valizadeh.challenges.backbase.kalah.handler;
 
 import lombok.SneakyThrows;
 import me.valizadeh.challenges.backbase.kalah.model.Game;
@@ -6,14 +6,12 @@ import me.valizadeh.challenges.backbase.kalah.model.GameState;
 import me.valizadeh.challenges.backbase.kalah.model.Pit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.net.InetAddress;
 import java.text.MessageFormat;
 import java.util.List;
 
-import static me.valizadeh.challenges.backbase.kalah.service.GameInitiator.KALAH_INITIAL_STONES;
+import static me.valizadeh.challenges.backbase.kalah.handler.GameInitiator.KALAH_INITIAL_STONES;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameInitiatorTest {

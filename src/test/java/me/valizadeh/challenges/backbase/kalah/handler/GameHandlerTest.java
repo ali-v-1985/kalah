@@ -1,4 +1,4 @@
-package me.valizadeh.challenges.backbase.kalah.service;
+package me.valizadeh.challenges.backbase.kalah.handler;
 
 import me.valizadeh.challenges.backbase.kalah.model.Game;
 import me.valizadeh.challenges.backbase.kalah.model.GameState;
@@ -15,10 +15,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GameServiceTest {
+class GameHandlerTest {
 
     @InjectMocks
-    GameService underTest;
+    GameHandler underTest;
 
     @Mock
     GameInitiator gameInitiator;
@@ -27,7 +27,7 @@ class GameServiceTest {
     GameMemory gameMemory;
 
     @Mock
-    MoveExecutor moveExecutor;
+    MoveHandler moveHandler;
 
     @Mock
     GameStateChecker gameStateChecker;
@@ -61,7 +61,7 @@ class GameServiceTest {
 
         when(gameMemory.loadGame(eq(gameId))).thenReturn(gameState);
         Integer pitId = 1;
-        when(moveExecutor.play(eq(gameState), eq(pitId))).thenReturn(gameStateAfterPlay);
+        when(moveHandler.play(eq(gameState), eq(pitId))).thenReturn(gameStateAfterPlay);
         when(gameStateChecker.checkIfFinished(eq(gameStateAfterPlay))).thenReturn(gameStateAfterPlay);
 
 
@@ -70,7 +70,7 @@ class GameServiceTest {
 
         // then
         verify(gameMemory).loadGame(eq(gameId));
-        verify(moveExecutor).play(eq(gameState), eq(pitId));
+        verify(moveHandler).play(eq(gameState), eq(pitId));
         verify(gameStateChecker).checkIfFinished(eq(gameStateAfterPlay));
         verify(gameMemory).storeGame(eq(gameId), eq(gameStateAfterPlay));
         assertEquals(gameState, playedGameState);

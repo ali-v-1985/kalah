@@ -1,4 +1,4 @@
-package me.valizadeh.challenges.backbase.kalah.service;
+package me.valizadeh.challenges.backbase.kalah.handler;
 
 import me.valizadeh.challenges.backbase.kalah.model.GameState;
 import me.valizadeh.challenges.backbase.kalah.validator.LoadGameValidator;
@@ -25,14 +25,14 @@ class GameMemoryTest {
 
     @Test
     void loadGame() {
-        Integer gameId = 1;
+        int gameId = 1;
         assertDoesNotThrow(() -> underTest.loadGame(gameId));
         verify(validator).validateGame(any(), eq(gameId));
     }
 
     @Test
     void storeGame() {
-        Integer gameId = 1;
+        int gameId = 1;
         GameState gameState = mock(GameState.class);
         assertDoesNotThrow(() -> underTest.storeGame(gameId, gameState));
     }

@@ -1,4 +1,4 @@
-package me.valizadeh.challenges.backbase.kalah.service;
+package me.valizadeh.challenges.backbase.kalah.handler;
 
 import lombok.SneakyThrows;
 import me.valizadeh.challenges.backbase.kalah.model.Game;
@@ -11,6 +11,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.stream.IntStream;
 
+/**
+ * The game initiator.
+ *
+ * @author Ali
+ */
 @Component
 public class GameInitiator {
 
@@ -36,25 +41,37 @@ public class GameInitiator {
         this.stones = stones;
     }
 
+    /**
+     * Initiate the game with the configured settings.
+     *
+     * @return The initial state of the game.
+     */
     public GameState initiate() {
         Game game = new Game(host, port);
         return initiateGameBoard(game);
     }
 
+    /**
+     * Create the {@link GameState} for the given {@code game} and add the pits based on configuration.
+     * @param game The game which a board should be created for.
+     * @return The initial game state of the given {@code game}.
+     */
     private GameState initiateGameBoard(Game game) {
         GameState gameState = new GameState(game, players);
         IntStream.rangeClosed(1, players).forEach(p -> {
-            addPlayerPits(p, gameState);
-            addPlayerKalah(p, gameState);
+            addPlayerPits(gameState, p);
+            addPlayerKalah(gameState, p);
         });
         return gameState;
     }
 
-    private void addPlayerKalah(Integer playerNum, GameState gameState) {
-        gameState.getPits().add(new Pit(playerNum * pits + playerNum, KALAH_INITIAL_STONES));
+    private void addPlayerKalah(GameState gameState,
+                                int playerId) {
+        gameState.getPits().add(new Pit(playerId * pits + playerId, KALAH_INITIAL_STONES));
     }
 
-    private void addPlayerPits(int playerId, GameState gameState) {
+    private void addPlayerPits(GameState gameState,
+                               int playerId) {
         IntStream.rangeClosed(getPlayerStartPit(playerId), getPlayerEndPit(playerId))
                 .forEach(i -> gameState.getPits().add(new Pit(i, stones)));
     }

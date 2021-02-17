@@ -1,4 +1,4 @@
-package me.valizadeh.challenges.backbase.kalah.service;
+package me.valizadeh.challenges.backbase.kalah.handler;
 
 import me.valizadeh.challenges.backbase.kalah.model.Game;
 import me.valizadeh.challenges.backbase.kalah.model.GameState;
