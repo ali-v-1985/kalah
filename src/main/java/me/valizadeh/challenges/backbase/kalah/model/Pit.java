@@ -22,7 +22,7 @@ public class Pit {
     }
 
     public int empty() {
-        var stonesBeforeEmpty = this.stones;
+        int stonesBeforeEmpty = this.stones;
         this.stones = 0;
         return stonesBeforeEmpty;
     }
