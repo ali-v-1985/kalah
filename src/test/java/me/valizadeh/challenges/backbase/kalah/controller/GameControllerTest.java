@@ -38,7 +38,7 @@ class GameControllerTest {
         GameState gameState = new GameState(new Game("localhost", 8086), 2);
         when(handler.createGame()).thenReturn(gameState);
 
-        MvcResult mvcResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult mvcResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         String content = mvcResult.getResponse().getContentAsString();
@@ -51,7 +51,7 @@ class GameControllerTest {
         when(handler.createGame()).thenReturn(gameState);
         when(handler.makeMove(eq(gameState.getGame().getId()), eq(1))).thenReturn(gameState);
 
-        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         assertNotNull(createGameResult.getResponse().getContentAsString());
@@ -70,7 +70,7 @@ class GameControllerTest {
         when(handler.createGame()).thenReturn(gameState);
         when(handler.makeMove(eq(gameState.getGame().getId()), eq(2))).thenThrow(GameNotFoundException.class);
 
-        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         assertNotNull(createGameResult.getResponse().getContentAsString());
@@ -87,7 +87,7 @@ class GameControllerTest {
         when(handler.createGame()).thenReturn(gameState);
         when(handler.makeMove(eq(gameState.getGame().getId()), eq(1))).thenThrow(EmptyPitException.class);
 
-        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         assertNotNull(createGameResult.getResponse().getContentAsString());
@@ -104,7 +104,7 @@ class GameControllerTest {
         when(handler.createGame()).thenReturn(gameState);
         when(handler.makeMove(eq(gameState.getGame().getId()), eq(1))).thenThrow(GameFinishedException.class);
 
-        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         assertNotNull(createGameResult.getResponse().getContentAsString());
@@ -121,7 +121,7 @@ class GameControllerTest {
         when(handler.createGame()).thenReturn(gameState);
         when(handler.makeMove(eq(gameState.getGame().getId()), eq(1))).thenThrow(IsNotPlayerTurnException.class);
 
-        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         assertNotNull(createGameResult.getResponse().getContentAsString());
@@ -138,7 +138,7 @@ class GameControllerTest {
         when(handler.createGame()).thenReturn(gameState);
         when(handler.makeMove(eq(gameState.getGame().getId()), eq(16))).thenThrow(PitIdOutOfRangeException.class);
 
-        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         assertNotNull(createGameResult.getResponse().getContentAsString());
@@ -155,7 +155,7 @@ class GameControllerTest {
         when(handler.createGame()).thenReturn(gameState);
         when(handler.makeMove(eq(gameState.getGame().getId()), eq(7))).thenThrow(PitIsKalahException.class);
 
-        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isOk())
+        MvcResult createGameResult = this.mockMvc.perform(post("/games")).andExpect(status().isCreated())
                 .andReturn();
 
         assertNotNull(createGameResult.getResponse().getContentAsString());

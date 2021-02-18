@@ -5,6 +5,8 @@ import me.valizadeh.challenges.backbase.kalah.model.Game;
 import me.valizadeh.challenges.backbase.kalah.model.GameState;
 import me.valizadeh.challenges.backbase.kalah.model.MakeMoveResult;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,9 +49,11 @@ public class GameController {
      * @return An instance of the created game.
      */
     @PostMapping("/games")
-    public Game createGame() {
+    public ResponseEntity<Game> createGame() {
         GameState gameState = gameHandler.createGame();
-        return gameState.getGame();
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(gameState.getGame());
     }
 
     /**
@@ -64,10 +68,12 @@ public class GameController {
      *         to an instance of {@link MakeMoveResult}
      */
     @PutMapping("/games/{gameId}/pits/{pitId}")
-    public MakeMoveResult makeMove(@PathVariable @NotNull @NotEmpty Integer gameId,
+    public ResponseEntity<MakeMoveResult> makeMove(@PathVariable @NotNull @NotEmpty Integer gameId,
                                    @PathVariable @NotNull @NotEmpty Integer pitId) {
 
         GameState gameState = gameHandler.makeMove(gameId, pitId);
-        return conversionService.convert(gameState, MakeMoveResult.class);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(conversionService.convert(gameState, MakeMoveResult.class));
     }
 }
